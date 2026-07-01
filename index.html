@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tryout Ujian Mandiri FK UNG</title>
+<style>
+  :root{
+    --ink:#16241f;
+    --paper:#f3efe4;
+    --paper-2:#ebe5d4;
+    --line:#cdc4ac;
+    --moss:#3f6b4f;
+    --moss-dark:#2c4d39;
+    --gold:#b88a2e;
+    --rust:#a8492f;
+    --shadow:rgba(28,40,32,.14);
+    --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;600;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);
+    background:var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:24px 20px 80px}
+  .screen{display:none;animation:fade .35s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- HEADER / BRAND ---------- */
+  .brand{display:flex;align-items:center;gap:14px;margin-bottom:30px}
+  .crest{
+    width:54px;height:54px;flex:none;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,var(--moss),var(--moss-dark));
+    display:grid;place-items:center;color:#f3efe4;
+    font-family:var(--serif);font-weight:900;font-size:22px;
+    box-shadow:0 6px 16px var(--shadow);
+  }
+  .brand h1{font-family:var(--serif);font-weight:600;font-size:1.15rem;letter-spacing:-.01em}
+  .brand p{font-size:.78rem;color:#6c6450;text-transform:uppercase;letter-spacing:.14em}
+
+  /* ---------- COVER ---------- */
+  .cover-hero{
+    background:linear-gradient(150deg,var(--moss-dark),var(--moss));
+    color:#f3efe4;border-radius:20px;padding:38px 32px;position:relative;overflow:hidden;
+    box-shadow:0 18px 40px var(--shadow);margin-bottom:26px;
+  }
+  .cover-hero::after{
+    content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;
+    border-radius:50%;background:rgba(184,138,46,.22);
+  }
+  .cover-hero .eyebrow{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;opacity:.85;margin-bottom:14px}
+  .cover-hero h2{font-family:var(--serif);font-weight:900;font-size:2.1rem;line-height:1.05;letter-spacing:-.02em;position:relative;z-index:1}
+  .cover-hero .sub{margin-top:14px;font-size:.95rem;opacity:.92;max-width:30ch;position:relative;z-index:1}
+
+  .card{
+    background:var(--paper-2);border:1px solid var(--line);border-radius:16px;
+    padding:24px;margin-bottom:18px;
+  }
+  .card h3{font-family:var(--serif);font-size:1.05rem;margin-bottom:6px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:.8rem;font-weight:600;margin-bottom:6px;color:#4a5650}
+  .field input{
+    width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;
+    background:#fbf9f2;font-family:var(--sans);font-size:.95rem;color:var(--ink);
+  }
+  .field input:focus{outline:2px solid var(--moss);border-color:transparent}
+  .field .err{color:var(--rust);font-size:.74rem;margin-top:5px;display:none}
+  .field.invalid .err{display:block}
+  .field.invalid input{border-color:var(--rust)}
+
+  .rules{list-style:none;font-size:.86rem;color:#4f5a52}
+  .rules li{padding:7px 0 7px 26px;position:relative;border-bottom:1px dashed var(--line)}
+  .rules li:last-child{border-bottom:0}
+  .rules li::before{content:"";position:absolute;left:4px;top:13px;width:8px;height:8px;border-radius:2px;background:var(--gold);transform:rotate(45deg)}
+
+  .btn{
+    width:100%;padding:15px;border:0;border-radius:12px;cursor:pointer;
+    font-family:var(--sans);font-weight:700;font-size:1rem;
+    background:var(--moss);color:#f3efe4;transition:.18s;
+    box-shadow:0 8px 18px var(--shadow);
+  }
+  .btn:hover{background:var(--moss-dark);transform:translateY(-1px)}
+  .btn.alt{background:var(--gold)}
+  .btn.alt:hover{background:#9c7423}
+  .btn.ghost{background:transparent;color:var(--moss);box-shadow:none;border:1.5px solid var(--moss)}
+  .btn.ghost:hover{background:rgba(63,107,79,.08);transform:none}
+
+  /* ---------- EXAM BAR ---------- */
+  .exam-bar{
+    position:sticky;top:0;z-index:20;background:var(--paper);
+    border-bottom:1px solid var(--line);padding:14px 0;margin:-24px 0 18px;
+  }
+  .exam-bar .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .subtest-tag{font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:#6c6450}
+  .subtest-tag b{display:block;font-family:var(--serif);font-size:1rem;color:var(--ink);text-transform:none;letter-spacing:0}
+  .timer{
+    font-family:var(--serif);font-weight:900;font-size:1.5rem;
+    background:var(--moss-dark);color:#f3efe4;padding:6px 16px;border-radius:10px;
+    min-width:96px;text-align:center;font-variant-numeric:tabular-nums;
+  }
+  .timer.warn{background:var(--rust);animation:pulse .9s infinite}
+  @keyframes pulse{50%{opacity:.65}}
+  .progress-track{height:6px;background:var(--paper-2);border-radius:99px;margin-top:12px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--moss));width:0;transition:width .3s}
+
+  /* ---------- QUESTION ---------- */
+  .qmeta{font-size:.78rem;color:#6c6450;letter-spacing:.05em;margin-bottom:10px}
+  .qtext{font-size:1.08rem;line-height:1.6;margin-bottom:20px;white-space:pre-wrap}
+  .opt{
+    display:flex;gap:12px;align-items:flex-start;
+    border:1px solid var(--line);background:var(--paper-2);
+    border-radius:12px;padding:13px 15px;margin-bottom:10px;cursor:pointer;transition:.15s;
+  }
+  .opt:hover{border-color:var(--moss);background:#eef0e6}
+  .opt.sel{border-color:var(--moss);background:#e6efe5;box-shadow:inset 0 0 0 1px var(--moss)}
+  .opt .key{
+    flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);
+    display:grid;place-items:center;font-weight:700;font-size:.82rem;color:#4f5a52;
+  }
+  .opt.sel .key{background:var(--moss);color:#f3efe4;border-color:var(--moss)}
+  .opt .body{flex:1;font-size:.95rem;padding-top:2px}
+
+  .nav{display:flex;gap:12px;margin-top:24px}
+  .nav .btn{flex:1}
+
+  /* ---------- NAV GRID ---------- */
+  .grid-toggle{font-size:.82rem;color:var(--moss);font-weight:600;cursor:pointer;margin-top:18px;display:inline-block}
+  .qgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:7px;margin-top:14px}
+  .qgrid button{
+    aspect-ratio:1;border:1px solid var(--line);background:var(--paper-2);border-radius:8px;
+    font-weight:600;font-size:.8rem;cursor:pointer;color:#4f5a52;
+  }
+  .qgrid button.answered{background:var(--moss);color:#f3efe4;border-color:var(--moss)}
+  .qgrid button.current{outline:2px solid var(--gold);outline-offset:1px}
+
+  /* ---------- RESULT ---------- */
+  .score-ring{
+    width:170px;height:170px;border-radius:50%;margin:8px auto 20px;
+    display:grid;place-items:center;
+    background:conic-gradient(var(--moss) var(--deg,0deg),var(--paper-2) 0);
+  }
+  .score-ring .inner{
+    width:130px;height:130px;border-radius:50%;background:var(--paper);
+    display:grid;place-items:center;text-align:center;
+  }
+  .score-ring .pct{font-family:var(--serif);font-weight:900;font-size:2.2rem}
+  .score-ring .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:#6c6450}
+  .res-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px dashed var(--line);font-size:.9rem}
+  .res-row:last-child{border-bottom:0}
+  .res-row .bars{flex:1;margin:0 14px;height:8px;background:var(--paper);border-radius:99px;overflow:hidden;align-self:center}
+  .res-row .bars i{display:block;height:100%;background:var(--moss)}
+
+  /* result stats row */
+  .res-stats{display:flex;justify-content:center;gap:10px;margin-top:14px}
+  .res-stats .stat{flex:1;max-width:110px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 6px}
+  .res-stats .stat b{display:block;font-family:var(--serif);font-weight:900;font-size:1.5rem;line-height:1}
+  .res-stats .stat span{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#6c6450}
+  .res-stats .stat:nth-child(1) b{color:var(--moss)}
+  .res-stats .stat:nth-child(2) b{color:var(--rust)}
+  .res-stats .stat:nth-child(3) b{color:#8a8268}
+
+  /* review */
+  .review-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .review-filter{display:flex;gap:6px}
+  .chip{border:1px solid var(--line);background:var(--paper);color:#4f5a52;border-radius:99px;padding:5px 13px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:var(--sans)}
+  .chip.active{background:var(--moss);color:#f3efe4;border-color:var(--moss)}
+  .rev-item{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:var(--paper)}
+  .rev-item.correct{border-left:4px solid var(--moss)}
+  .rev-item.wrong{border-left:4px solid var(--rust)}
+  .rev-item.blank{border-left:4px solid #b8a86a}
+  .rev-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+  .rev-tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:#6c6450}
+  .rev-badge{font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:99px}
+  .rev-badge.correct{background:#e1efe0;color:var(--moss-dark)}
+  .rev-badge.wrong{background:#f3ddd5;color:var(--rust)}
+  .rev-badge.blank{background:#efe9d2;color:#7a6f46}
+  .rev-q{font-size:.92rem;line-height:1.5;margin-bottom:10px;white-space:pre-wrap}
+  .rev-ans{font-size:.86rem;margin:3px 0}
+  .rev-ans .lab{display:inline-block;min-width:88px;color:#6c6450}
+  .rev-ans .you-wrong{color:var(--rust);font-weight:600}
+  .rev-ans .key{color:var(--moss-dark);font-weight:700}
+  .rev-exp{font-size:.85rem;line-height:1.55;margin-top:9px;padding:10px 12px;background:var(--paper-2);border-radius:9px;color:#42504a}
+  .rev-exp b{color:var(--moss-dark)}
+  .rev-empty{text-align:center;color:#8a8268;font-size:.86rem;padding:18px}
+  .footer-note{text-align:center;font-size:.76rem;color:#8a8268;margin-top:30px}
+  @media(max-width:520px){
+    .cover-hero h2{font-size:1.7rem}
+    .qgrid{grid-template-columns:repeat(8,1fr)}
+    .timer{font-size:1.25rem;min-width:80px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ IDENTITAS ============ -->
+  <section id="screen-id" class="screen active">
+    <div class="brand">
+      <div class="crest">FK</div>
+      <div>
+        <h1>Ujian Mandiri FK UNG</h1>
+        <p>Tryout Seleksi Masuk</p>
+      </div>
+    </div>
+
+    <div class="cover-hero">
+      <div class="eyebrow">Simulasi Resmi</div>
+      <h2>Tryout Ujian<br>Mandiri FK UNG</h2>
+      <p class="sub">7 sub test &middot; 140 soal &middot; waktu per sub test. Siapkan dirimu seperti hari ujian.</p>
+    </div>
+
+    <div class="card">
+      <h3>Data Peserta</h3>
+      <p style="font-size:.84rem;color:#6c6450;margin-bottom:18px">Isi identitas sebelum memulai. Data hanya tersimpan di perangkatmu selama sesi ini.</p>
+
+      <div class="field" id="f-nama">
+        <label>Nama Lengkap</label>
+        <input type="text" id="in-nama" placeholder="cth. Ananda Putri">
+        <span class="err">Nama wajib diisi.</span>
+      </div>
+      <div class="field" id="f-asal">
+        <label>Asal Sekolah / Instansi</label>
+        <input type="text" id="in-asal" placeholder="cth. SMAN 1 Gorontalo">
+        <span class="err">Asal sekolah wajib diisi.</span>
+      </div>
+      <div class="field" id="f-email">
+        <label>Email</label>
+        <input type="email" id="in-email" placeholder="cth. nama@email.com">
+        <span class="err">Email tidak valid.</span>
+      </div>
+      <div class="field" id="f-hp">
+        <label>No. WhatsApp</label>
+        <input type="tel" id="in-hp" placeholder="cth. 0812xxxxxxx">
+        <span class="err">Nomor wajib diisi.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Tata Tertib</h3>
+      <ul class="rules">
+        <li>Tryout terdiri atas 7 sub test, masing-masing 20 soal.</li>
+        <li>Setiap sub test punya alokasi waktu sendiri (mis. Penalaran Umum 20 menit, Penalaran Matematika 43 menit). Timer berjalan untuk seluruh sub test.</li>
+        <li>Dalam satu sub test Anda bebas maju, mundur, atau melompati soal. Gunakan peta soal untuk berpindah cepat.</li>
+        <li>Jika waktu sub test habis, sistem otomatis lanjut ke sub test berikutnya. Anda juga bisa menyelesaikan lebih awal.</li>
+        <li>Di akhir tiap sub test ada jeda singkat sebelum lanjut.</li>
+        <li>Jangan menutup atau me-refresh halaman saat ujian.</li>
+      </ul>
+    </div>
+
+    <button class="btn" onclick="startExam()">Mulai Tryout &rarr;</button>
+    <p class="footer-note">Total alokasi waktu pengerjaan &plusmn; 171 menit (di luar jeda antar sub test).</p>
+  </section>
+
+  <!-- ============ UJIAN ============ -->
+  <section id="screen-exam" class="screen">
+    <div class="exam-bar">
+      <div class="row">
+        <div class="subtest-tag">Sub Test <span id="st-num">1</span>/7<b id="st-name">—</b></div>
+        <div class="timer" id="timer">01:00</div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+    </div>
+
+    <div class="qmeta">Soal <span id="q-num">1</span> dari 20 &middot; <span id="q-answered">0</span> terjawab</div>
+    <div class="qtext" id="q-text">—</div>
+    <div id="opts"></div>
+
+    <div class="nav">
+      <button class="btn ghost" id="btn-prev" onclick="prevQ()">&larr; Sebelumnya</button>
+      <button class="btn" id="btn-next" onclick="nextQ()">Selanjutnya &rarr;</button>
+    </div>
+
+    <span class="grid-toggle" onclick="toggleGrid()">Lihat peta soal &darr;</span>
+    <div class="qgrid" id="qgrid" style="display:none"></div>
+  </section>
+
+  <!-- ============ HASIL ============ -->
+  <section id="screen-result" class="screen">
+    <div class="brand">
+      <div class="crest">FK</div>
+      <div>
+        <h1>Hasil Tryout</h1>
+        <p id="res-nama">Peserta</p>
+      </div>
+    </div>
+
+    <div class="card" style="text-align:center">
+      <div class="score-ring" id="ring">
+        <div class="inner">
+          <div class="pct" id="res-pct">0%</div>
+          <div class="lbl">Skor Total</div>
+        </div>
+      </div>
+      <div class="res-stats">
+        <div class="stat"><b id="res-correct">0</b><span>Benar</span></div>
+        <div class="stat"><b id="res-wrong">0</b><span>Salah</span></div>
+        <div class="stat"><b id="res-blank">0</b><span>Kosong</span></div>
+      </div>
+      <p style="font-size:.9rem;color:#4f5a52;margin-top:6px">Persentase ketepatan: <b id="res-pct2">0%</b> &middot; <b id="res-correct2">0</b> dari <b>140</b> soal</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:14px">Rincian per Sub Test</h3>
+      <div id="res-breakdown"></div>
+    </div>
+
+    <div class="card">
+      <div class="review-head">
+        <h3>Jawaban &amp; Pembahasan</h3>
+        <div class="review-filter">
+          <button class="chip active" data-filter="all" onclick="setReviewFilter('all',this)">Semua</button>
+          <button class="chip" data-filter="wrong" onclick="setReviewFilter('wrong',this)">Salah</button>
+          <button class="chip" data-filter="blank" onclick="setReviewFilter('blank',this)">Kosong</button>
+        </div>
+      </div>
+      <div id="res-review"></div>
+    </div>
+
+    <button class="btn" onclick="location.reload()">Ulangi Tryout</button>
+    <p class="footer-note">Latihan adalah jembatan menuju jas putih. Semangat!</p>
+  </section>
+
+</div>
+
+<script>
+/* =================================================================
+   KONFIGURASI SUB TEST
+   Ganti nama & isi soal sesuai kebutuhan. answer = index (0=A,1=B,..)
+   ================================================================= */
+// minutes = alokasi waktu per sub test (proporsional rasio UTBK untuk 20 soal)
+const SUBTESTS = [
+  { name:"Penalaran Umum", minutes:20 },
+  { name:"Pengetahuan dan Pemahaman Umum", minutes:15 },
+  { name:"Kemampuan Memahami Bacaan dan Menulis", minutes:25 },
+  { name:"Pengetahuan Kuantitatif", minutes:20 },
+  { name:"Literasi dalam Bahasa Indonesia", minutes:28 },
+  { name:"Literasi dalam Bahasa Inggris", minutes:20 },
+  { name:"Penalaran Matematika", minutes:43 },
+];
+const PER_SUBTEST = 20;
+
+/* ---- Bank soal real (terverifikasi). ---- */
+const BANK = [
+
+/* SUB TEST 1 */
+[
+ {text:"Semua dokter adalah lulusan perguruan tinggi. Sebagian lulusan perguruan tinggi adalah peneliti. Kesimpulan yang pasti benar adalah ...",
+  options:["Semua dokter adalah peneliti","Sebagian dokter adalah peneliti","Sebagian peneliti adalah lulusan perguruan tinggi","Semua peneliti adalah dokter","Tidak ada dokter yang menjadi peneliti"],answer:2,
+  pembahasan:"Semua dokter masuk kelompok lulusan PT. Karena sebagian lulusan PT adalah peneliti, yang pasti benar hanyalah 'sebagian peneliti adalah lulusan PT' (peneliti yang dimaksud berasal dari lulusan PT). Kaitan dokter–peneliti tidak bisa dipastikan."},
+ {text:"Jika hari ini hujan, maka jalanan basah. Ternyata jalanan tidak basah. Kesimpulan yang sah adalah ...",
+  options:["Hari ini hujan","Hari ini tidak hujan","Jalanan licin","Tidak dapat disimpulkan","Besok akan hujan"],answer:1,
+  pembahasan:"Pola analogi fungsi-tempat: sepatu dipakai di kaki, helm dipakai di kepala. Maka Sepatu:Kaki = Helm:Kepala."},
+ {text:"Perhatikan deret: 2, 6, 12, 20, 30, ... Angka berikutnya adalah ...",
+  options:["38","40","42","44","48"],answer:2,
+  pembahasan:"Ini modus tollens: 'jika hujan maka basah'. Karena jalan tidak basah, maka pasti tidak hujan."},
+ {text:"Semua mahasiswa kedokteran rajin belajar. Sebagian yang rajin belajar mendapat beasiswa. Pernyataan yang PASTI benar adalah ...",
+  options:["Semua mahasiswa kedokteran mendapat beasiswa","Sebagian mahasiswa kedokteran mungkin mendapat beasiswa","Semua penerima beasiswa adalah mahasiswa kedokteran","Tidak ada mahasiswa kedokteran berbeasiswa","Penerima beasiswa pasti malas"],answer:1,
+  pembahasan:"Lihat selisihnya: 4, 6, 8, 10 (naik 2). Setelah 30 selisih berikutnya 12, jadi 30+12 = 42."},
+ {text:"Deret huruf: A, C, F, J, O, ... Huruf berikutnya adalah ... (selisih bertambah 2,3,4,5,...)",
+  options:["S","T","U","V","W"],answer:2,
+  pembahasan:"Premisnya 'sebagian' yang rajin dapat beasiswa, jadi untuk mahasiswa kedokteran pun hanya 'mungkin' dapat beasiswa, tidak pasti semua."},
+ {text:"Lima orang (P, Q, R, S, T) duduk berderet menghadap ke depan. P di ujung kiri, T tepat di kanan P, R di ujung kanan. Posisi Q dan S adalah ...",
+  options:["ke-2 dan ke-3","ke-3 dan ke-4","ke-1 dan ke-5","ke-4 dan ke-5","ke-2 dan ke-5"],answer:1,
+  pembahasan:"Pola selisih bertambah: A(+2)C(+3)F(+4)J(+5)O(+6)U. Maka huruf setelah O adalah U."},
+ {text:"Pernyataan: 'Karena sebagian besar lulusan bekerja di pemerintahan, maka seluruh prodi harus fokus pada kebutuhan pemerintahan.' Kelemahan argumen ini adalah ...",
+  options:["Generalisasi berlebihan","Sebab-akibat terbalik","Data tidak relevan","Serangan pribadi","Analogi terlalu sederhana"],answer:0,
+  pembahasan:"P di kiri (posisi 1), T di posisi 2, R di posisi 5. Sisa Q dan S mengisi posisi 3 dan 4."},
+ {text:"Jika 3 mesin menyelesaikan 3 produk dalam 3 menit (laju tiap mesin sama), maka 9 mesin menyelesaikan 9 produk dalam ...",
+  options:["1 menit","3 menit","9 menit","27 menit","81 menit"],answer:1,
+  pembahasan:"Dari sebagian (sebagian besar lulusan) ditarik kesimpulan untuk seluruh prodi. Ini generalisasi berlebihan."},
+ {text:"Deret: 1, 1, 2, 3, 5, 8, ... Angka berikutnya adalah ...",
+  options:["11","12","13","14","15"],answer:2,
+  pembahasan:"Deret Fibonacci: tiap suku = jumlah dua suku sebelumnya. 5+8 = 13."},
+ {text:"Semua A adalah B. Tidak ada B yang C. Maka kesimpulan yang sah adalah ...",
+  options:["Semua A adalah C","Sebagian A adalah C","Tidak ada A yang C","Semua C adalah A","Sebagian C adalah B"],answer:2,
+  pembahasan:"Jika laju mesin tetap, 1 mesin butuh 3 menit untuk 1 produk. 9 mesin mengerjakan 9 produk serentak, tetap 3 menit."},
+ {text:"Deret: 100, 50, 25, 12,5, ... Angka berikutnya adalah ...",
+  options:["6","6,25","5","8","10"],answer:1,
+  pembahasan:"Deret Fibonacci: tiap suku = jumlah dua suku sebelumnya. 5+8 = 13."},
+ {text:"A lebih tua dari B; C lebih muda dari B; D lebih tua dari A. Yang paling tua adalah ...",
+  options:["A","B","C","D","Tidak dapat ditentukan"],answer:3,
+  pembahasan:"Semua A di dalam B, dan B sama sekali terpisah dari C. Maka A pasti tidak beririsan dengan C: tidak ada A yang C."},
+ {text:"Deret: 3, 7, 15, 31, ... (pola xₙ₊₁ = 2xₙ + 1). Angka berikutnya adalah ...",
+  options:["47","55","63","62","60"],answer:2,
+  pembahasan:"Pola xₙ₊₁ = 2xₙ + 1: 31×2+1 = 63."},
+ {text:"Pernyataan benar: 'Jika belajar, maka lulus.' Andi tidak lulus. Maka ...",
+  options:["Andi belajar","Andi tidak belajar","Andi lulus","Andi malas tapi lulus","Tidak ada kesimpulan"],answer:1,
+  pembahasan:"Modus tollens: 'jika belajar maka lulus'. Andi tidak lulus, maka pasti tidak belajar."},
+ {text:"Deret bilangan prima: 2, 3, 5, 7, 11, 13, ... Angka berikutnya adalah ...",
+  options:["15","16","17","19","21"],answer:2,
+  pembahasan:"Deret bilangan prima berurutan. Setelah 13 adalah 17."},
+ {text:"Dalam satu pekan kerja (Senin–Jumat), rapat diadakan dua hari berurutan, bukan Senin dan bukan Jumat. Pasangan hari yang mungkin adalah ...",
+  options:["Senin–Selasa","Kamis–Jumat","Selasa–Rabu","Jumat–Senin","Minggu–Senin"],answer:2,
+  pembahasan:"Rapat dua hari berurutan, bukan Senin, bukan Jumat. Pasangan yang memenuhi: Selasa–Rabu."},
+ {text:"Jika semua P bersifat Q, dan x tidak bersifat Q, maka ...",
+  options:["x adalah P","x bukan P","x mungkin P","sebagian P bukan Q","Q bukan P"],answer:1,
+  pembahasan:"Semua P bersifat Q. Jika x tidak punya sifat Q, x tidak mungkin anggota P. Jadi x bukan P."},
+ {text:"Perhatikan pola: 4, 9, 16, 25, ... (kuadrat). Bilangan berikutnya adalah ...",
+  options:["30","32","34","36","49"],answer:3,
+  pembahasan:"Deret kuadrat: 2²,3²,4²,5². Berikutnya 6² = 36."},
+ {text:"Sebuah kode menggunakan aturan: setiap huruf digeser maju 1. Kata 'BCD' menjadi ...",
+  options:["ABC","CDE","ACE","BDE","DEF"],answer:1,
+  pembahasan:"Aturan geser maju 1 huruf: B→C, C→D, D→E. 'BCD' menjadi 'CDE'."},
+ {text:"Jika 'beberapa siswa pandai' bernilai benar, maka pernyataan yang pasti benar adalah ...",
+  options:["Semua siswa pandai","Tidak ada siswa pandai","Ada minimal satu siswa pandai","Semua siswa tidak pandai","Hanya satu siswa pandai"],answer:2,
+  pembahasan:"'Beberapa siswa pandai' berarti minimal ada satu siswa pandai. Itu yang pasti benar."}
+],
+
+/* SUB TEST 2 */
+[
+ {text:"Ibukota Provinsi Gorontalo adalah ...",
+  options:["Limboto","Kota Gorontalo","Marisa","Tilamuta","Suwawa"],answer:1,
+  pembahasan:"Ibukota Provinsi Gorontalo adalah Kota Gorontalo."},
+ {text:"Lembaga negara yang berwenang menguji undang-undang terhadap UUD 1945 adalah ...",
+  options:["Mahkamah Agung","Mahkamah Konstitusi","Komisi Yudisial","DPR","Kejaksaan Agung"],answer:1,
+  pembahasan:"Pengujian undang-undang terhadap UUD 1945 (judicial review) adalah wewenang Mahkamah Konstitusi."},
+ {text:"Proklamasi Kemerdekaan Indonesia dibacakan pada tanggal ...",
+  options:["17 Agustus 1945","1 Juni 1945","28 Oktober 1928","10 November 1945","20 Mei 1908"],answer:0,
+  pembahasan:"Proklamasi dibacakan Soekarno–Hatta pada 17 Agustus 1945."},
+ {text:"Pancasila sebagai dasar negara secara resmi disahkan pada tanggal ...",
+  options:["1 Juni 1945","17 Agustus 1945","18 Agustus 1945","22 Juni 1945","29 Mei 1945"],answer:2,
+  pembahasan:"Pancasila disahkan sebagai dasar negara bersama UUD 1945 oleh PPKI pada 18 Agustus 1945."},
+ {text:"Sinonim yang tepat untuk kata 'kontemporer' adalah ...",
+  options:["kuno","masa kini","tradisional","klasik","lampau"],answer:1,
+  pembahasan:"'Kontemporer' berarti masa kini atau kekinian."},
+ {text:"Konferensi Asia Afrika tahun 1955 diselenggarakan di kota ...",
+  options:["Jakarta","Surabaya","Bandung","Yogyakarta","Medan"],answer:2,
+  pembahasan:"Konferensi Asia Afrika pertama digelar di Bandung pada tahun 1955."},
+ {text:"Mata uang resmi negara Jepang adalah ...",
+  options:["Won","Yuan","Yen","Ringgit","Baht"],answer:2,
+  pembahasan:"Mata uang resmi Jepang adalah Yen."},
+ {text:"Lembaga yang menetapkan kebijakan moneter dan mengatur peredaran rupiah di Indonesia adalah ...",
+  options:["Kementerian Keuangan","Bank Indonesia","OJK","Bappenas","BPK"],answer:1,
+  pembahasan:"Bank Indonesia adalah bank sentral yang menetapkan kebijakan moneter dan mengatur rupiah."},
+ {text:"Benua terluas di dunia adalah ...",
+  options:["Afrika","Amerika","Eropa","Asia","Australia"],answer:3,
+  pembahasan:"Asia adalah benua terluas di dunia berdasarkan luas daratan."},
+ {text:"Penulis novel 'Laskar Pelangi' adalah ...",
+  options:["Andrea Hirata","Tere Liye","Pramoedya Ananta Toer","Habiburrahman","Dee Lestari"],answer:0,
+  pembahasan:"Novel 'Laskar Pelangi' ditulis oleh Andrea Hirata."},
+ {text:"Selat yang memisahkan Pulau Sumatra dan Pulau Jawa adalah ...",
+  options:["Selat Sunda","Selat Malaka","Selat Bali","Selat Madura","Selat Lombok"],answer:0,
+  pembahasan:"Selat Sunda memisahkan Pulau Sumatra dan Pulau Jawa."},
+ {text:"Tokoh yang dikenal sebagai Bapak Koperasi Indonesia adalah ...",
+  options:["Soekarno","Mohammad Hatta","Ki Hajar Dewantara","Sutan Sjahrir","Tan Malaka"],answer:1,
+  pembahasan:"Mohammad Hatta dikenal sebagai Bapak Koperasi Indonesia."},
+ {text:"Peristiwa Sumpah Pemuda diperingati setiap tanggal ...",
+  options:["20 Mei","28 Oktober","10 November","2 Mei","1 Juni"],answer:1,
+  pembahasan:"Sumpah Pemuda diperingati setiap 28 Oktober."},
+ {text:"Negara dengan jumlah penduduk terbanyak di dunia saat ini adalah ...",
+  options:["Tiongkok","India","Amerika Serikat","Indonesia","Brasil"],answer:1,
+  pembahasan:"India kini menjadi negara berpenduduk terbanyak di dunia, melampaui Tiongkok."},
+ {text:"Organisasi kerja sama ekonomi negara-negara Asia Tenggara dikenal dengan singkatan ...",
+  options:["ASEAN","APEC","OPEC","NATO","Uni Eropa"],answer:0,
+  pembahasan:"Kerja sama ekonomi negara Asia Tenggara disingkat ASEAN."},
+ {text:"Lagu kebangsaan Indonesia 'Indonesia Raya' diciptakan oleh ...",
+  options:["W.R. Supratman","Ismail Marzuki","C. Simanjuntak","Gesang","Kusbini"],answer:0,
+  pembahasan:"Lagu 'Indonesia Raya' diciptakan oleh W.R. Supratman."},
+ {text:"Garis khayal yang membagi bumi menjadi belahan utara dan selatan adalah ...",
+  options:["meridian","khatulistiwa (ekuator)","garis bujur","garis balik","tropic"],answer:1,
+  pembahasan:"Garis khatulistiwa (ekuator) membagi bumi menjadi belahan utara dan selatan."},
+ {text:"Mahkamah internasional (International Court of Justice) berkedudukan di kota ...",
+  options:["New York","Jenewa","Den Haag","Paris","Wina"],answer:2,
+  pembahasan:"Mahkamah Internasional (ICJ) berkedudukan di Den Haag, Belanda."},
+ {text:"Kata 'inovasi' paling tepat bermakna ...",
+  options:["pengulangan","pembaruan/penemuan baru","peniruan","penghapusan","pengurangan"],answer:1,
+  pembahasan:"'Inovasi' berarti pembaruan atau penemuan hal baru."},
+ {text:"Sungai terpanjang di Pulau Kalimantan adalah ...",
+  options:["Sungai Bengawan Solo","Sungai Kapuas","Sungai Musi","Sungai Mahakam pendek","Sungai Brantas"],answer:1,
+  pembahasan:"Sungai Kapuas di Kalimantan Barat adalah sungai terpanjang di Pulau Kalimantan sekaligus terpanjang di Indonesia."}
+],
+
+/* SUB TEST 3 */
+[
+ {text:"Kata baku yang tepat menurut KBBI adalah ...",
+  options:["apotik","aktifitas","analisa","sistem","praktek"],answer:3,
+  pembahasan:"Bentuk baku menurut KBBI adalah 'sistem' (bukan apotik, aktifitas, analisa, atau praktek)."},
+ {text:"Perbaikan kalimat agar efektif: 'Para hadirin sekalian dipersilakan untuk berdiri.'",
+  options:["Para hadirin dipersilakan berdiri.","Hadirin dipersilakan berdiri.","Para hadirin sekalian berdiri.","Kepada hadirin sekalian berdiri.","Semua para hadirin berdiri."],answer:1,
+  pembahasan:"'Para', 'hadirin', dan 'sekalian' sama-sama bermakna jamak sehingga mubazir. Cukup 'Hadirin dipersilakan berdiri.'"},
+ {text:"Kalimat yang menggunakan ejaan benar adalah ...",
+  options:["Ia pergi ke Bandung, pada hari senin.","Ia pergi ke Bandung pada hari Senin.","ia pergi ke bandung pada hari senin.","Ia pergi Kebandung pada hari Senin.","Ia pergi ke Bandung pada hari senin"],answer:1,
+  pembahasan:"Nama hari ('Senin') dan nama kota ditulis kapital, tanpa koma sebelum keterangan waktu: 'Ia pergi ke Bandung pada hari Senin.'"},
+ {text:"Konjungsi yang tepat: 'Ia rajin belajar ... nilainya selalu bagus.'",
+  options:["tetapi","sehingga","walaupun","meskipun","seandainya"],answer:1,
+  pembahasan:"Hubungan sebab-akibat (rajin → nilai bagus) memerlukan konjungsi 'sehingga'."},
+ {text:"Imbuhan yang tepat: 'Pemerintah sedang ... jalan tol baru.'",
+  options:["membangunkan","membangun","dibangun","bangunan","pembangunan"],answer:1,
+  pembahasan:"Kata dasar 'bangun' + objek 'jalan tol' memakai bentuk 'membangun'."},
+ {text:"Kata berimbuhan yang tepat: 'Mereka ... jalan itu agar lebih luas.'",
+  options:["memperlebarkan","melebarkan","memperlebar","dilebarkan","pelebaran"],answer:2,
+  pembahasan:"Imbuhan yang tepat untuk 'lebar' menjadi kata kerja transitif adalah 'memperlebar', bukan 'memperlebarkan'."},
+ {text:"Penggunaan tanda baca yang benar adalah ...",
+  options:["Dia bertanya, \"Kapan kita berangkat?\"","Dia bertanya \"kapan kita berangkat?\".","Dia bertanya, kapan kita berangkat.","Dia bertanya: kapan kita berangkat?","Dia bertanya \"Kapan kita berangkat\"?"],answer:0,
+  pembahasan:"Petikan langsung diawali koma dan ditulis dalam tanda kutip dengan tanda tanya di dalam: Dia bertanya, \"Kapan kita berangkat?\""},
+ {text:"Kata serapan yang penulisannya baku adalah ...",
+  options:["kwalitas","kualitas","kwalitet","kualiti","qualitas"],answer:1,
+  pembahasan:"Serapan baku dari 'quality' adalah 'kualitas'."},
+ {text:"Kalimat yang TIDAK logis (rancu) adalah ...",
+  options:["Buku itu dibaca oleh adik.","Waktu dan tempat kami persilakan.","Ibu memasak di dapur.","Mereka belajar bersama.","Dokter memeriksa pasien."],answer:1,
+  pembahasan:"'Waktu dan tempat kami persilakan' rancu karena yang dipersilakan seharusnya orang, bukan waktu/tempat."},
+ {text:"Kata depan yang ditulis terpisah dengan benar adalah ...",
+  options:["dirumah","kepasar","di sekolah","kekota","dipantai"],answer:2,
+  pembahasan:"Kata depan 'di' yang menunjukkan tempat ditulis terpisah: 'di sekolah'."},
+ {text:"Kalimat baku yang benar adalah ...",
+  options:["Saya pikir bahwa daripada hal itu penting.","Menurut saya, hal itu penting.","Kepada para hadirin dimohon berdiri.","Di mana daripada buku ini dibeli?","Banyak siswa-siswa yang hadir."],answer:1,
+  pembahasan:"Kalimat baku dan logis: 'Menurut saya, hal itu penting.' Pilihan lain mengandung kemubaziran/ketidakbakuan."},
+ {text:"Penulisan gelar yang benar adalah ...",
+  options:["dr Andi memeriksa pasien.","Dr. Andi memeriksa pasien.","dr. Andi memeriksa pasien.","DR Andi memeriksa pasien.","Dr Andi, memeriksa pasien."],answer:2,
+  pembahasan:"Penulisan gelar dokter yang benar: 'dr.' (huruf kecil, diakhiri titik)."},
+ {text:"Kalimat yang menggunakan kata hubung sebab-akibat secara tepat adalah ...",
+  options:["Ia sakit, oleh karena itu ia tidak masuk.","Ia sakit, walaupun ia tidak masuk.","Ia sakit, atau ia tidak masuk.","Ia sakit, serta ia tidak masuk.","Ia sakit, melainkan tidak masuk."],answer:0,
+  pembahasan:"Hubungan sebab-akibat ditandai 'oleh karena itu': 'Ia sakit, oleh karena itu ia tidak masuk.'"},
+ {text:"Bentuk pasif yang benar dari 'Andi menulis surat' adalah ...",
+  options:["Surat menulis Andi.","Surat ditulis oleh Andi.","Andi ditulis surat.","Surat menuliskan Andi.","Andi menulis oleh surat."],answer:1,
+  pembahasan:"Bentuk pasif: objek 'surat' jadi subjek, pelaku diberi 'oleh': 'Surat ditulis oleh Andi.'"},
+ {text:"Kalimat yang hemat (efektif) adalah ...",
+  options:["Dia naik ke atas tangga.","Dia naik tangga.","Dia naik ke atas menuju tangga.","Dia menaiki ke atas tangga.","Dia naik atas tangga ke atas."],answer:1,
+  pembahasan:"'Naik' sudah bermakna ke atas, sehingga 'naik ke atas' mubazir. Cukup 'Dia naik tangga.'"},
+ {text:"Penulisan kata bilangan yang benar di awal kalimat adalah ...",
+  options:["20 orang hadir dalam rapat.","Dua puluh orang hadir dalam rapat.","20 (dua puluh) orang hadir.","Duapuluh orang hadir.","Dua-puluh orang hadir."],answer:1,
+  pembahasan:"Bilangan di awal kalimat ditulis dengan huruf: 'Dua puluh orang hadir dalam rapat.'"},
+ {text:"Pasangan kata berantonim yang tepat adalah ...",
+  options:["besar – luas","tinggi – rendah","cepat – kencang","indah – cantik","pintar – cerdas"],answer:1,
+  pembahasan:"Antonim (lawan kata) yang tepat: tinggi >< rendah."},
+ {text:"Kalimat yang menggunakan kata 'di' sebagai imbuhan (digabung) dengan benar adalah ...",
+  options:["Buku di baca adik.","Ia tinggal dirumah nenek.","Surat itu dikirim kemarin.","Mereka pergi kepasar.","Ia berdiri di pintu di tutup."],answer:2,
+  pembahasan:"Imbuhan 'di-' (kata kerja pasif) ditulis serangkai: 'dikirim'. Kata depan 'di' lainnya terpisah."},
+ {text:"Susunan kalimat yang padu: (1) Ia menyiapkan alat. (2) Ia mulai memeriksa pasien. (3) Ia mencuci tangan. Urutan logis adalah ...",
+  options:["1-2-3","3-1-2","1-3-2","2-1-3","3-2-1"],answer:1,
+  pembahasan:"Urutan logis tindakan medis: cuci tangan dulu (3), siapkan alat (1), baru periksa pasien (2): 3-1-2."},
+ {text:"Kata yang penulisannya sesuai PUEBI adalah ...",
+  options:["jadwal","jadual","jadwall","jadual","jadawal"],answer:0,
+  pembahasan:"Penulisan baku menurut PUEBI adalah 'jadwal'."}
+],
+
+/* SUB TEST 4 */
+[
+ {text:"Biaya pendaftaran Rp300.000 naik 20%. Besar kenaikannya adalah ...",
+  options:["Rp30.000","Rp50.000","Rp60.000","Rp75.000","Rp90.000"],answer:2,
+  pembahasan:"Kenaikan 20% dari 300.000 = 0,2 × 300.000 = 60.000."},
+ {text:"Jika 5 pekerja menyelesaikan pekerjaan dalam 12 hari, maka 6 pekerja (laju sama) menyelesaikannya dalam ...",
+  options:["8 hari","9 hari","10 hari","11 hari","14 hari"],answer:2,
+  pembahasan:"Total kerja = 5 × 12 = 60 hari-orang. Dengan 6 pekerja: 60 ÷ 6 = 10 hari."},
+ {text:"Rata-rata dari 4, 8, 10, dan 14 adalah ...",
+  options:["8","9","10","11","12"],answer:1,
+  pembahasan:"Rata-rata = (4+8+10+14) ÷ 4 = 36 ÷ 4 = 9."},
+ {text:"30% dari 250 adalah ...",
+  options:["55","65","70","75","80"],answer:3,
+  pembahasan:"30% × 250 = 0,3 × 250 = 75."},
+ {text:"Sebuah persegi panjang luasnya 180 m², perbandingan panjang : lebar = 5 : 4. Panjangnya adalah ...",
+  options:["12 m","15 m","16 m","18 m","20 m"],answer:1,
+  pembahasan:"Misal panjang 5k, lebar 4k. Luas = 20k² = 180 → k² = 9 → k = 3. Panjang = 5×3 = 15 m."},
+ {text:"Jika x + 5 = 12, maka nilai 3x adalah ...",
+  options:["7","14","21","24","35"],answer:2,
+  pembahasan:"x + 5 = 12 → x = 7, maka 3x = 21."},
+ {text:"Sebuah barang dijual Rp120.000 dengan untung 20% dari harga beli. Harga beli barang adalah ...",
+  options:["Rp96.000","Rp100.000","Rp102.000","Rp110.000","Rp144.000"],answer:1,
+  pembahasan:"Harga jual = 120% harga beli. Harga beli = 120.000 ÷ 1,2 = 100.000."},
+ {text:"Nilai dari 2³ + 3² adalah ...",
+  options:["13","15","17","18","19"],answer:2,
+  pembahasan:"2³ + 3² = 8 + 9 = 17."},
+ {text:"Sebuah mobil menempuh 240 km dalam 4 jam. Kecepatan rata-ratanya adalah ...",
+  options:["50 km/jam","55 km/jam","60 km/jam","65 km/jam","70 km/jam"],answer:2,
+  pembahasan:"Kecepatan = jarak ÷ waktu = 240 ÷ 4 = 60 km/jam."},
+ {text:"Jika perbandingan 2 : 3 = 8 : x, maka x = ...",
+  options:["10","11","12","13","14"],answer:2,
+  pembahasan:"Perbandingan 2:3 = 8:x → x = (3×8) ÷ 2 = 12."},
+ {text:"FPB dari 24 dan 36 adalah ...",
+  options:["6","8","12","18","24"],answer:2,
+  pembahasan:"Faktor persekutuan terbesar 24 dan 36 adalah 12."},
+ {text:"Sebuah dadu dilempar satu kali. Peluang muncul angka genap adalah ...",
+  options:["1/6","1/3","1/2","2/3","5/6"],answer:2,
+  pembahasan:"Angka genap pada dadu: 2,4,6 → 3 dari 6 → peluang 3/6 = 1/2."},
+ {text:"Hasil dari 15% × 200 + 10 adalah ...",
+  options:["30","35","40","45","50"],answer:2,
+  pembahasan:"15% × 200 = 30; lalu 30 + 10 = 40."},
+ {text:"Jika 2x − 4 = 10, maka x = ...",
+  options:["5","6","7","8","9"],answer:2,
+  pembahasan:"2x − 4 = 10 → 2x = 14 → x = 7."},
+ {text:"Keliling lingkaran berjari-jari 7 cm (π = 22/7) adalah ...",
+  options:["22 cm","33 cm","44 cm","49 cm","154 cm"],answer:2,
+  pembahasan:"Keliling = 2πr = 2 × (22/7) × 7 = 44 cm."},
+ {text:"Diskon 25% atas harga Rp80.000. Harga setelah diskon adalah ...",
+  options:["Rp55.000","Rp60.000","Rp64.000","Rp65.000","Rp70.000"],answer:1,
+  pembahasan:"Harga setelah diskon = 75% × 80.000 = 60.000."},
+ {text:"Median dari data 3, 7, 5, 9, 11 adalah ...",
+  options:["5","7","8","9","11"],answer:1,
+  pembahasan:"Data diurutkan: 3,5,7,9,11. Nilai tengah (median) = 7."},
+ {text:"Jika sebuah segitiga siku-siku berkaki 6 dan 8, maka sisi miringnya adalah ...",
+  options:["9","10","12","14","48"],answer:1,
+  pembahasan:"Sisi miring = √(6² + 8²) = √(36+64) = √100 = 10."},
+ {text:"Tabungan Rp1.000.000 berbunga tunggal 6% per tahun. Bunga selama 2 tahun adalah ...",
+  options:["Rp60.000","Rp100.000","Rp120.000","Rp160.000","Rp200.000"],answer:2,
+  pembahasan:"Bunga tunggal = pokok × bunga × waktu = 1.000.000 × 6% × 2 = 120.000."},
+ {text:"Nilai dari (1/2 + 1/3) adalah ...",
+  options:["2/5","3/5","5/6","1/6","4/6"],answer:2,
+  pembahasan:"1/2 + 1/3 = 3/6 + 2/6 = 5/6."}
+],
+
+/* SUB TEST 5 */
+[
+ {text:"Bacaan: 'Vaksinasi membentuk kekebalan tubuh terhadap penyakit tertentu sehingga risiko penularan menurun.' Ide pokok paragraf tersebut adalah ...",
+  options:["Vaksinasi menimbulkan efek samping","Vaksinasi membentuk kekebalan dan menurunkan risiko penularan","Penyakit menular berbahaya","Tubuh selalu sehat tanpa vaksin","Penularan tidak dapat dicegah"],answer:1,
+  pembahasan:"Inti teks: vaksinasi membentuk kekebalan sehingga risiko penularan menurun. Itulah ide pokoknya."},
+ {text:"Bacaan: 'Meski teknologi mempermudah komunikasi, interaksi tatap muka tetap penting untuk membangun empati.' Simpulan yang tepat adalah ...",
+  options:["Teknologi tidak berguna","Tatap muka tetap diperlukan meski ada teknologi","Empati hanya dari teknologi","Komunikasi sebaiknya dihindari","Teknologi menggantikan empati"],answer:1,
+  pembahasan:"Meski ada teknologi, penulis menegaskan tatap muka tetap penting. Simpulannya: tatap muka tetap diperlukan."},
+ {text:"Kata 'efektif' dalam 'Metode ini efektif menurunkan demam' bermakna ...",
+  options:["mahal","berhasil guna","berbahaya","lambat","murah"],answer:1,
+  pembahasan:"Dalam konteks ini 'efektif' berarti berhasil guna (mampu menurunkan demam)."},
+ {text:"Bacaan: 'Konsumsi gula berlebih meningkatkan risiko diabetes. Oleh sebab itu, asupan gula perlu dibatasi.' Hubungan antarkalimatnya adalah ...",
+  options:["pertentangan","sebab-akibat","perbandingan","penambahan","pilihan"],answer:1,
+  pembahasan:"Kalimat kedua adalah akibat dari kalimat pertama (gula berlebih → batasi). Hubungannya sebab-akibat."},
+ {text:"Ungkapan 'naik daun' bermakna ...",
+  options:["sedang populer","jatuh miskin","memanjat pohon","marah besar","pergi jauh"],answer:0,
+  pembahasan:"Ungkapan 'naik daun' berarti sedang populer/terkenal."},
+ {text:"Bacaan: 'Banjir tahunan di kota itu disebabkan buruknya drainase dan alih fungsi lahan resapan.' Penyebab banjir menurut teks adalah ...",
+  options:["curah hujan saja","drainase buruk dan hilangnya lahan resapan","gempa bumi","pasang air laut","kebakaran"],answer:1,
+  pembahasan:"Teks menyebut dua sebab: drainase buruk dan hilangnya lahan resapan."},
+ {text:"Makna 'kambing hitam' dalam 'Ia dijadikan kambing hitam' adalah ...",
+  options:["hewan ternak","orang yang dipersalahkan","orang kaya","pemimpin","penolong"],answer:1,
+  pembahasan:"'Kambing hitam' berarti orang yang dipersalahkan atas kesalahan orang lain."},
+ {text:"Sebuah teks bersifat persuasif apabila bertujuan ...",
+  options:["menceritakan kisah","menggambarkan objek","mengajak/membujuk pembaca","memaparkan data saja","melaporkan kejadian"],answer:2,
+  pembahasan:"Teks persuasif bertujuan mengajak atau membujuk pembaca."},
+ {text:"Bacaan: 'Olahraga teratur memperkuat jantung, namun olahraga berlebihan tanpa istirahat dapat merugikan.' Pesan utama teks adalah ...",
+  options:["Olahraga selalu berbahaya","Olahraga perlu, tetapi proporsional","Istirahat tidak penting","Jantung tidak terpengaruh olahraga","Hindari olahraga"],answer:1,
+  pembahasan:"Pesan teks: olahraga bermanfaat asalkan tidak berlebihan, jadi harus proporsional."},
+ {text:"Fakta dalam teks ditandai oleh ...",
+  options:["pendapat penulis","data yang dapat dibuktikan","perkiraan","harapan","ajakan"],answer:1,
+  pembahasan:"Fakta adalah hal yang dapat dibuktikan kebenarannya, berbeda dari opini/perkiraan."},
+ {text:"Sinonim kata 'argumen' adalah ...",
+  options:["pertanyaan","alasan","kesimpulan","perintah","jawaban"],answer:1,
+  pembahasan:"Sinonim 'argumen' adalah 'alasan' (dasar suatu pendapat)."},
+ {text:"Bacaan: 'Membaca buku memperluas wawasan dan melatih daya pikir kritis.' Manfaat membaca menurut teks adalah ...",
+  options:["hanya hiburan","memperluas wawasan dan melatih pikir kritis","membuang waktu","menambah biaya","menurunkan fokus"],answer:1,
+  pembahasan:"Sesuai teks, manfaat membaca: memperluas wawasan dan melatih daya pikir kritis."},
+ {text:"Kalimat yang merupakan opini adalah ...",
+  options:["Air mendidih pada 100°C di tekanan 1 atm.","Menurut saya, film itu paling bagus tahun ini.","Indonesia beribu kota Jakarta sebelum 2024.","Satu jam terdiri atas 60 menit.","Matahari terbit dari timur."],answer:1,
+  pembahasan:"Opini mengandung penilaian pribadi ('menurut saya ... paling bagus'), bukan fakta yang dapat diukur."},
+ {text:"Tujuan utama teks eksposisi adalah ...",
+  options:["menghibur","memaparkan informasi/menjelaskan","menakuti","menjual barang","mengkritik tokoh"],answer:1,
+  pembahasan:"Teks eksposisi bertujuan memaparkan/menjelaskan informasi kepada pembaca."},
+ {text:"Majas personifikasi terdapat dalam kalimat ...",
+  options:["Angin berbisik menyapa dedaunan.","Ia berlari secepat kilat.","Wajahnya seputih kapas.","Suaranya menggelegar bagai guntur.","Hatinya sekeras batu."],answer:0,
+  pembahasan:"Personifikasi memberi sifat manusia pada benda: 'angin berbisik'."},
+ {text:"Bacaan: 'Pemerintah mengimbau masyarakat menghemat air saat kemarau.' Kata 'mengimbau' dapat diganti dengan ...",
+  options:["melarang","menganjurkan","memaksa","menghukum","menolak"],answer:1,
+  pembahasan:"'Mengimbau' berarti mengajak/menganjurkan, paling dekat dengan 'menganjurkan'."},
+ {text:"Simpulan dibedakan dari ringkasan karena simpulan ...",
+  options:["menyalin seluruh teks","berisi pendapat akhir hasil penalaran atas teks","lebih panjang dari teks","tidak berkaitan teks","hanya judul"],answer:1,
+  pembahasan:"Simpulan adalah pendapat akhir hasil penalaran atas isi teks, bukan sekadar menyalin."},
+ {text:"Kalimat yang koheren melanjutkan 'Hujan turun sangat deras, ...' adalah ...",
+  options:["sehingga jalanan tergenang air.","karena matahari bersinar terik.","tetapi udara sangat kering.","walaupun langit cerah tanpa awan.","maka tanah menjadi berdebu."],answer:0,
+  pembahasan:"Hujan deras secara logis berakibat jalanan tergenang ('sehingga jalanan tergenang air')."},
+ {text:"Inti paragraf biasanya terdapat pada ...",
+  options:["kalimat penjelas","kalimat utama","tanda baca","judul saja","catatan kaki"],answer:1,
+  pembahasan:"Inti paragraf umumnya ada pada kalimat utama; sisanya kalimat penjelas."},
+ {text:"Teks: 'Sampah plastik terurai ratusan tahun, mencemari laut, dan membahayakan biota.' Sikap yang sesuai isi teks adalah ...",
+  options:["menambah pemakaian plastik","mengurangi sampah plastik","membuang plastik ke laut","mengabaikan masalah","membakar sembarangan"],answer:1,
+  pembahasan:"Karena plastik mencemari dan berbahaya, sikap yang sesuai adalah mengurangi sampah plastik."}
+],
+
+/* SUB TEST 6 */
+[
+ {text:"Read: 'Regular handwashing reduces the spread of infectious diseases.' The main idea is that handwashing ...",
+  options:["causes diseases","helps prevent disease transmission","is unnecessary","spreads germs","wastes water"],answer:1,
+  pembahasan:"Teks menyatakan cuci tangan rutin mengurangi penyebaran penyakit menular. Ide utamanya: mencegah penularan."},
+ {text:"The synonym of 'rapid' is ...",
+  options:["slow","fast","late","weak","heavy"],answer:1,
+  pembahasan:"'Rapid' artinya cepat, sinonimnya 'fast'."},
+ {text:"Complete: 'If it rains tomorrow, we ... stay at home.'",
+  options:["will","would","were","had","are"],answer:0,
+  pembahasan:"Kalimat pengandaian tipe 1 (nyata di masa depan): if + present, main clause + 'will'. Jadi 'will'."},
+ {text:"Read: 'Although the medicine is effective, it may cause mild side effects.' We can infer that the medicine ...",
+  options:["never works","works but has minor drawbacks","is completely harmful","has no effect","is a placebo"],answer:1,
+  pembahasan:"'Although ... effective, ... mild side effects' menunjukkan obat manjur tetapi punya kekurangan kecil."},
+ {text:"The antonym of 'increase' is ...",
+  options:["raise","grow","decrease","expand","rise"],answer:2,
+  pembahasan:"Lawan kata 'increase' (naik) adalah 'decrease' (turun)."},
+ {text:"Choose the correct passive form of 'The doctor examines the patient.'",
+  options:["The patient examines the doctor.","The patient is examined by the doctor.","The patient was examine by the doctor.","The doctor is examined.","The patient examined the doctor."],answer:1,
+  pembahasan:"Pasif: objek 'the patient' jadi subjek + is + V3 + by: 'The patient is examined by the doctor.'"},
+ {text:"'He has been working here ... 2020.' The correct word is ...",
+  options:["for","since","at","from","during"],answer:1,
+  pembahasan:"'Since' dipakai untuk titik waktu (sejak 2020); 'for' untuk durasi."},
+ {text:"The word 'physician' most nearly means ...",
+  options:["physicist","doctor","pharmacist","nurse","surgeon only"],answer:1,
+  pembahasan:"'Physician' artinya dokter (doctor)."},
+ {text:"Read: 'Sleep deprivation impairs concentration and weakens the immune system.' According to the text, lack of sleep ...",
+  options:["improves focus","harms focus and immunity","has no effect","strengthens immunity","increases energy"],answer:1,
+  pembahasan:"Teks menyebut kurang tidur merusak konsentrasi dan melemahkan imun. Jadi: merugikan fokus dan imunitas."},
+ {text:"Choose the grammatically correct sentence:",
+  options:["There is many students.","There are many students in the class.","There are much students.","There is many student.","There be many students."],answer:1,
+  pembahasan:"Subjek jamak 'students' memakai 'there are'."},
+ {text:"'She is taller ... her sister.' The correct word is ...",
+  options:["then","than","that","as","to"],answer:1,
+  pembahasan:"Perbandingan memakai 'than': 'taller than her sister'."},
+ {text:"What is the past tense of 'go'?",
+  options:["goed","gone","went","going","goes"],answer:2,
+  pembahasan:"Bentuk lampau (past tense) dari 'go' adalah 'went'."},
+ {text:"Read: 'Exercise not only strengthens muscles but also boosts mood.' The text suggests exercise has ...",
+  options:["only physical benefits","both physical and mental benefits","no benefits","only mental benefits","harmful effects"],answer:1,
+  pembahasan:"Teks: olahraga menguatkan otot DAN memperbaiki suasana hati → manfaat fisik dan mental."},
+ {text:"Choose the correct article: '... apple a day keeps the doctor away.'",
+  options:["A","An","The","No article","Some"],answer:1,
+  pembahasan:"Di depan bunyi vokal ('apple') memakai artikel 'an'."},
+ {text:"The phrase 'to give up' means ...",
+  options:["to start","to continue","to quit","to win","to help"],answer:2,
+  pembahasan:"'To give up' artinya menyerah/berhenti (to quit)."},
+ {text:"'Neither John nor his friends ... coming.' The correct verb is ...",
+  options:["is","am","are","was","be"],answer:2,
+  pembahasan:"'Neither ... nor ...' dengan subjek jamak terakhir ('friends') memakai 'are'."},
+ {text:"Read: 'The author argues that reading fiction improves empathy.' The author's purpose is to ...",
+  options:["entertain only","persuade readers of fiction's value","sell books","criticize readers","describe a place"],answer:1,
+  pembahasan:"Penulis berargumen membaca fiksi meningkatkan empati → tujuannya membujuk akan nilai fiksi."},
+ {text:"'The children ... in the park now.' Choose the correct form.",
+  options:["plays","is playing","are playing","play","played"],answer:2,
+  pembahasan:"Subjek jamak 'children' + sekarang ('now') memakai present continuous 'are playing'."},
+ {text:"Choose the correct spelling:",
+  options:["recieve","receive","receeve","receve","recieve"],answer:1,
+  pembahasan:"Ejaan yang benar: 'receive' (aturan i sebelum e kecuali setelah c)."},
+ {text:"Read: 'Despite warnings, many people ignore the risks of smoking.' The word 'despite' shows ...",
+  options:["cause","contrast","addition","time","example"],answer:1,
+  pembahasan:"'Despite' menandakan pertentangan (contrast): meski ada peringatan, tetap diabaikan."}
+],
+
+/* SUB TEST 7 */
+[
+ {text:"Sebuah toko memberi diskon 15%. Jika harga awal baju Rp200.000, harga yang dibayar adalah ...",
+  options:["Rp150.000","Rp160.000","Rp170.000","Rp175.000","Rp185.000"],answer:2,
+  pembahasan:"Diskon 15% → bayar 85%. 85% × 200.000 = 170.000."},
+ {text:"Rata-rata nilai 4 ulangan Andi adalah 80. Agar rata-rata 5 ulangan menjadi 82, nilai ulangan ke-5 harus ...",
+  options:["86","88","90","92","94"],answer:2,
+  pembahasan:"Total 5 ulangan agar rata-rata 82 = 5 × 82 = 410. Total 4 ulangan = 4 × 80 = 320. Nilai ke-5 = 410 − 320 = 90."},
+ {text:"Sebuah resep untuk 4 porsi memerlukan 200 g tepung. Untuk 10 porsi diperlukan tepung ...",
+  options:["400 g","450 g","500 g","550 g","600 g"],answer:2,
+  pembahasan:"4 porsi = 200 g, jadi 1 porsi = 50 g. Untuk 10 porsi = 10 × 50 = 500 g."},
+ {text:"Sebuah mobil menempuh 180 km dengan 12 liter bensin. Konsumsi bahan bakarnya adalah ...",
+  options:["10 km/liter","12 km/liter","15 km/liter","18 km/liter","20 km/liter"],answer:2,
+  pembahasan:"Konsumsi = jarak ÷ bensin = 180 ÷ 12 = 15 km/liter."},
+ {text:"Jika 3(x − 2) = 2x + 1, maka nilai x adalah ...",
+  options:["5","6","7","8","9"],answer:2,
+  pembahasan:"3(x−2) = 2x+1 → 3x−6 = 2x+1 → x = 7."},
+ {text:"Sebuah kolam terisi 3/5 bagian berisi 600 liter. Kapasitas penuh kolam adalah ...",
+  options:["800 liter","900 liter","1.000 liter","1.100 liter","1.200 liter"],answer:2,
+  pembahasan:"3/5 bagian = 600 L, jadi 1/5 = 200 L. Penuh (5/5) = 5 × 200 = 1.000 L."},
+ {text:"Harga 3 buku dan 2 pena Rp34.000. Harga 1 buku Rp8.000. Harga 1 pena adalah ...",
+  options:["Rp4.000","Rp5.000","Rp6.000","Rp7.000","Rp8.000"],answer:1,
+  pembahasan:"3 buku = 3 × 8.000 = 24.000. Sisa untuk 2 pena = 34.000 − 24.000 = 10.000, jadi 1 pena = 5.000."},
+ {text:"Suatu data: 5, 7, 7, 8, 13. Modus dan rata-ratanya berturut-turut adalah ...",
+  options:["7 dan 8","8 dan 7","7 dan 7","8 dan 8","7 dan 9"],answer:0,
+  pembahasan:"Modus = nilai paling sering = 7. Rata-rata = (5+7+7+8+13) ÷ 5 = 40 ÷ 5 = 8."},
+ {text:"Seorang pekerja dibayar Rp25.000 per jam. Jika ia bekerja 7 jam sehari selama 5 hari, total upahnya adalah ...",
+  options:["Rp700.000","Rp750.000","Rp800.000","Rp875.000","Rp900.000"],answer:3,
+  pembahasan:"Upah = 25.000 × 7 jam × 5 hari = 875.000."},
+ {text:"Sebuah peta berskala 1 : 500.000. Jarak dua kota di peta 4 cm. Jarak sebenarnya adalah ...",
+  options:["10 km","15 km","20 km","25 km","30 km"],answer:2,
+  pembahasan:"Skala 1:500.000 berarti 1 cm = 5 km. 4 cm = 4 × 5 = 20 km."},
+ {text:"Jika 2ˣ = 32, maka nilai x adalah ...",
+  options:["3","4","5","6","16"],answer:2,
+  pembahasan:"2ˣ = 32 = 2⁵, jadi x = 5."},
+ {text:"Sebuah segitiga memiliki alas 12 cm dan tinggi 8 cm. Luasnya adalah ...",
+  options:["40 cm²","48 cm²","56 cm²","96 cm²","20 cm²"],answer:1,
+  pembahasan:"Luas segitiga = ½ × alas × tinggi = ½ × 12 × 8 = 48 cm²."},
+ {text:"Populasi bakteri berlipat dua setiap jam. Jika mula-mula 100, setelah 3 jam jumlahnya ...",
+  options:["300","600","800","900","1.000"],answer:2,
+  pembahasan:"Berlipat dua tiap jam: 100 → 200 → 400 → 800 setelah 3 jam."},
+ {text:"Sebuah tangki bocor kehilangan 5% air dari 400 liter. Sisa air dalam tangki adalah ...",
+  options:["360 liter","370 liter","380 liter","390 liter","395 liter"],answer:2,
+  pembahasan:"Hilang 5% dari 400 = 20 L. Sisa = 400 − 20 = 380 L."},
+ {text:"Jika f(x) = 2x + 3, maka f(5) bernilai ...",
+  options:["10","11","12","13","15"],answer:3,
+  pembahasan:"f(5) = 2×5 + 3 = 13."},
+ {text:"Sebuah lingkaran berjari-jari 10 cm. Luasnya (π = 3,14) adalah ...",
+  options:["314 cm²","31,4 cm²","100 cm²","628 cm²","157 cm²"],answer:0,
+  pembahasan:"Luas lingkaran = πr² = 3,14 × 10² = 314 cm²."},
+ {text:"Sebuah pinjaman Rp2.000.000 dengan bunga tunggal 10% per tahun. Total yang dikembalikan setelah 1 tahun adalah ...",
+  options:["Rp2.100.000","Rp2.200.000","Rp2.000.000","Rp2.500.000","Rp2.020.000"],answer:1,
+  pembahasan:"Bunga 10% × 2.000.000 = 200.000. Total dikembalikan = 2.000.000 + 200.000 = 2.200.000."},
+ {text:"Perbandingan uang Ani : Budi = 3 : 5. Jika selisihnya Rp40.000, uang Budi adalah ...",
+  options:["Rp60.000","Rp80.000","Rp100.000","Rp120.000","Rp140.000"],answer:2,
+  pembahasan:"Selisih 5−3 = 2 bagian = 40.000, jadi 1 bagian = 20.000. Uang Budi = 5 × 20.000 = 100.000."},
+ {text:"Sebuah kubus bervolume 64 cm³. Panjang rusuknya adalah ...",
+  options:["3 cm","4 cm","5 cm","6 cm","8 cm"],answer:1,
+  pembahasan:"Volume kubus = rusuk³ = 64, jadi rusuk = ∛64 = 4 cm."},
+ {text:"Dalam ujian, peluang lulus 0,8. Dari 200 peserta, perkiraan jumlah yang lulus adalah ...",
+  options:["120","140","150","160","180"],answer:3,
+  pembahasan:"Perkiraan lulus = peluang × jumlah = 0,8 × 200 = 160 orang."}
+]
+
+];
+
+/* ================= STATE ================= */
+let peserta={};
+let curST=0, curQ=0;
+let answers=[];               // answers[st][q] = index | null
+let timer=null, timeLeft=0;
+let breakTimer=null;
+let inBreak=false;
+
+SUBTESTS.forEach(()=>answers.push(new Array(PER_SUBTEST).fill(null)));
+
+/* ================= SCREEN HELPERS ================= */
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+/* ================= IDENTITAS ================= */
+function startExam(){
+  const fields=[
+    {id:'f-nama',in:'in-nama',test:v=>v.trim().length>0},
+    {id:'f-asal',in:'in-asal',test:v=>v.trim().length>0},
+    {id:'f-email',in:'in-email',test:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())},
+    {id:'f-hp',in:'in-hp',test:v=>v.trim().length>=8},
+  ];
+  let ok=true;
+  fields.forEach(f=>{
+    const val=document.getElementById(f.in).value;
+    const wrap=document.getElementById(f.id);
+    if(f.test(val)){wrap.classList.remove('invalid');}
+    else{wrap.classList.add('invalid');ok=false;}
+  });
+  if(!ok)return;
+  peserta={
+    nama:document.getElementById('in-nama').value.trim(),
+    asal:document.getElementById('in-asal').value.trim(),
+    email:document.getElementById('in-email').value.trim(),
+    hp:document.getElementById('in-hp').value.trim(),
+  };
+  curST=0;curQ=0;
+  show('screen-exam');
+  startSubtest();
+}
+
+/* ================= UJIAN ================= */
+function loadQuestion(){
+  const st=SUBTESTS[curST];
+  const q=BANK[curST][curQ];
+  document.getElementById('st-num').textContent=curST+1;
+  document.getElementById('st-name').textContent=st.name;
+  document.getElementById('q-num').textContent=curQ+1;
+  document.getElementById('q-text').textContent=q.text;
+
+  // options
+  const wrap=document.getElementById('opts');
+  wrap.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const sel=answers[curST][curQ]===i?'sel':'';
+    const div=document.createElement('div');
+    div.className='opt '+sel;
+    div.onclick=()=>selectOpt(i);
+    div.innerHTML=`<div class="key">${String.fromCharCode(65+i)}</div><div class="body">${opt}</div>`;
+    wrap.appendChild(div);
+  });
+
+  // nav buttons
+  document.getElementById('btn-prev').style.visibility = curQ===0 ? 'hidden':'visible';
+  document.getElementById('btn-next').textContent =
+    curQ===PER_SUBTEST-1 ? 'Selesaikan Sub Test \u2192' : 'Selanjutnya \u2192';
+
+  updateMeta();
+  buildGrid();
+}
+
+function selectOpt(i){
+  answers[curST][curQ]=i;
+  document.querySelectorAll('#opts .opt').forEach((el,idx)=>{
+    el.classList.toggle('sel',idx===i);
+  });
+  updateMeta();
+  buildGrid();
+}
+
+function updateMeta(){
+  const answered=answers[curST].filter(a=>a!==null).length;
+  document.getElementById('q-answered').textContent=answered;
+  document.getElementById('progress').style.width=(answered/PER_SUBTEST*100)+'%';
+}
+
+function buildGrid(){
+  const g=document.getElementById('qgrid');
+  g.innerHTML='';
+  for(let i=0;i<PER_SUBTEST;i++){
+    const b=document.createElement('button');
+    b.textContent=i+1;
+    if(answers[curST][i]!==null)b.classList.add('answered');
+    if(i===curQ)b.classList.add('current');
+    b.onclick=()=>{curQ=i;loadQuestion();};
+    g.appendChild(b);
+  }
+}
+function toggleGrid(){
+  const g=document.getElementById('qgrid');
+  g.style.display=g.style.display==='none'?'grid':'none';
+}
+
+function prevQ(){ if(curQ>0){curQ--;loadQuestion();} }
+function nextQ(){
+  if(curQ<PER_SUBTEST-1){curQ++;loadQuestion();}
+  else{
+    const answered=answers[curST].filter(a=>a!==null).length;
+    const sisa=PER_SUBTEST-answered;
+    let msg='Selesaikan sub test ini sekarang?';
+    if(sisa>0) msg='Masih ada '+sisa+' soal belum dijawab. Selesaikan sub test ini sekarang? Waktu yang tersisa tidak dapat digunakan kembali.';
+    if(confirm(msg)) endSubtest();
+  }
+}
+
+/* ================= TIMER (per sub test) ================= */
+function startSubtest(){
+  curQ=0;
+  clearInterval(timer);
+  timeLeft = SUBTESTS[curST].minutes * 60;
+  loadQuestion();
+  renderTimer();
+  timer=setInterval(()=>{
+    timeLeft--;
+    renderTimer();
+    if(timeLeft<=0){
+      clearInterval(timer);
+      endSubtest();   // waktu sub test habis -> lanjut otomatis
+    }
+  },1000);
+}
+function renderTimer(){
+  const m=String(Math.floor(timeLeft/60)).padStart(2,'0');
+  const s=String(timeLeft%60).padStart(2,'0');
+  const el=document.getElementById('timer');
+  el.textContent=`${m}:${s}`;
+  el.classList.toggle('warn',timeLeft<=30);  // peringatan 30 detik terakhir
+}
+
+/* ========= AKHIR SUB TEST (langsung lanjut, tanpa jeda) ========= */
+function endSubtest(){
+  if(inBreak) return;       // cegah pemicu ganda (timer habis + tombol)
+  inBreak=true;
+  clearInterval(timer);
+  if(curST>=SUBTESTS.length-1){ showResult(); return; }
+  curST++;
+  inBreak=false;
+  startSubtest();
+}
+
+/* ================= HASIL + REVIEW ================= */
+let reviewData=[];           // {st, q, qtext, options, userIdx, keyIdx, status, exp}
+
+function showResult(){
+  clearInterval(timer);
+  let totalCorrect=0, totalWrong=0, totalBlank=0;
+  const rows=[];
+  reviewData=[];
+
+  SUBTESTS.forEach((st,si)=>{
+    let c=0;
+    for(let i=0;i<PER_SUBTEST;i++){
+      const q=BANK[si][i];
+      const u=answers[si][i];
+      let status;
+      if(u===null){ status='blank'; totalBlank++; }
+      else if(u===q.answer){ status='correct'; c++; totalCorrect++; }
+      else { status='wrong'; totalWrong++; }
+      reviewData.push({st:st.name, qNo:i+1, qtext:q.text, options:q.options,
+        userIdx:u, keyIdx:q.answer, status, exp:q.pembahasan||''});
+    }
+    rows.push({name:st.name, correct:c});
+  });
+
+  const total=SUBTESTS.length*PER_SUBTEST;
+  const pct=Math.round(totalCorrect/total*100);
+
+  document.getElementById('res-nama').textContent=peserta.nama;
+  document.getElementById('res-pct').textContent=pct+'%';
+  document.getElementById('res-pct2').textContent=pct+'%';
+  document.getElementById('res-correct').textContent=totalCorrect;
+  document.getElementById('res-correct2').textContent=totalCorrect;
+  document.getElementById('res-wrong').textContent=totalWrong;
+  document.getElementById('res-blank').textContent=totalBlank;
+  document.getElementById('ring').style.setProperty('--deg',(pct*3.6)+'deg');
+
+  const bd=document.getElementById('res-breakdown');
+  bd.innerHTML='';
+  rows.forEach(r=>{
+    const p=Math.round(r.correct/PER_SUBTEST*100);
+    const div=document.createElement('div');
+    div.className='res-row';
+    div.innerHTML=`<span style="flex:none;min-width:140px">${r.name}</span>
+      <span class="bars"><i style="width:${p}%"></i></span>
+      <b style="flex:none">${r.correct}/${PER_SUBTEST}</b>`;
+    bd.appendChild(div);
+  });
+
+  renderReview('all');
+  show('screen-result');
+}
+
+let curFilter='all';
+function setReviewFilter(f, el){
+  curFilter=f;
+  document.querySelectorAll('.review-filter .chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderReview(f);
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderReview(filter){
+  const box=document.getElementById('res-review');
+  box.innerHTML='';
+  const items=reviewData.filter(r=> filter==='all' ? true : r.status===filter);
+  if(items.length===0){
+    box.innerHTML='<div class="rev-empty">Tidak ada soal pada kategori ini. Kerja bagus!</div>';
+    return;
+  }
+  let lastSt='';
+  items.forEach(r=>{
+    if(r.st!==lastSt){
+      lastSt=r.st;
+      const h=document.createElement('div');
+      h.className='rev-tag';
+      h.style.margin='6px 0 10px';
+      h.textContent=r.st;
+      box.appendChild(h);
+    }
+    const L=i=>String.fromCharCode(65+i);
+    const badge = r.status==='correct' ? '<span class="rev-badge correct">Benar</span>'
+                : r.status==='wrong'   ? '<span class="rev-badge wrong">Salah</span>'
+                :                        '<span class="rev-badge blank">Kosong</span>';
+    const youLine = r.userIdx===null
+      ? `<div class="rev-ans"><span class="lab">Jawabanmu</span>: <span class="you-wrong">(tidak dijawab)</span></div>`
+      : `<div class="rev-ans"><span class="lab">Jawabanmu</span>: <span class="${r.status==='correct'?'key':'you-wrong'}">${L(r.userIdx)}. ${esc(r.options[r.userIdx])}</span></div>`;
+    const keyLine = `<div class="rev-ans"><span class="lab">Kunci</span>: <span class="key">${L(r.keyIdx)}. ${esc(r.options[r.keyIdx])}</span></div>`;
+    const expLine = r.exp ? `<div class="rev-exp"><b>Pembahasan:</b> ${esc(r.exp)}</div>` : '';
+    const div=document.createElement('div');
+    div.className='rev-item '+r.status;
+    div.innerHTML=`<div class="rev-top"><span class="rev-tag">Soal ${r.qNo}</span>${badge}</div>
+      <div class="rev-q">${esc(r.qtext)}</div>${youLine}${keyLine}${expLine}`;
+    box.appendChild(div);
+  });
+}
+
+/* prevent accidental refresh during exam */
+window.addEventListener('beforeunload',e=>{
+  if(document.getElementById('screen-exam').classList.contains('active')){
+    e.preventDefault();e.returnValue='';
+  }
+});
+</script>
+</body>
+</html>
